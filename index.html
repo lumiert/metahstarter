@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<!-- saved from url=(0055)file:///home/lumiert/Downloads/acionador/acionador.html -->
+<html><head><script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Quicksand&display=swap');
+
+
+
+:root {
+	--blue-meta: #1B88CE;
+	--dark-blue-meta: #032854;
+	--mid-blue-meta: #17457D;
+	--gray-meta: #222;
+	--bright-gray-meta: #444;
+	--dark-gray-meta: #333;
+}
+
+* {
+	font-family: 'Quicksand', Arial, sans-serif;
+}
+
+body {
+	font-family: Arial;
+	margin: 0px;
+}
+
+.tab {
+	overflow: hidden;
+	border: 1px solid #ccc;
+	background-color: #f1f1f1;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.tab img {
+	width: 24px;
+	padding-block: 20px;
+}
+
+.tab button {
+	background-color: inherit;
+  	display: flex;
+  	align-items: center;
+    	justify-content: center;
+	padding-inline: 25px;
+	border: none;
+	outline: none;
+	cursor: pointer;
+	transition: 0.3s;
+	font-size: 1.5vh;
+}
+
+.tab p {
+	float: right;
+	align-items: center;
+	justify-content: center;
+	padding-inline: 10px;
+	color: var(--blue-meta);
+}
+
+.tab button:hover {
+	background-color: rgba(0,0,0,0.05);
+}
+
+.tab button.active {
+	background-color: rgba(0,0,0,0.2);
+}
+
+.tabcontent {
+	display: none;
+	padding: 6px 12px;
+	border: 1px solid #ccc;
+	border-top: none;
+	padding: 24px;
+}
+
+.modal {
+	display: none;
+	position: fixed;
+	z-index: 1;
+	padding-top: 16vw;
+	left: 0;
+	top: -15vw;
+	width: 100vw;
+	height: 100vh;
+	overflow: auto;
+	background-color: rgb(0,0,0);
+	background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+	background: linear-gradient(var(--dark-blue-meta), var(--blue-meta));
+	color: white;
+	margin: auto;
+	text-align: center;
+	border: 1px solid #888;
+	width: 100vh;
+}
+
+.inside-modal {
+	padding: 64px;
+}
+
+.window-top {
+	background-color: var(--dark-blue-meta);
+	float: left;
+	color: white;
+	margin: 0px;
+	height: 52px;
+	width: 100%;
+}
+
+.close {
+	color: var(--blue-meta);
+	font-size: 3em;
+	float: right;
+	position: relative;
+	top: -57px;
+	padding-right: 16px;
+}
+
+.close:hover,
+.close:focus {
+	color: white;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+.titulo p {
+	display: inline-block;
+}
+
+.btnadd {
+	color: white;
+	background-color: var(--blue-meta);
+	border: none;
+	border-radius: 4px;
+	font-size: 2.2vh;
+	padding: 10px;
+}
+
+.btnadd:hover {
+	color: white;
+	background-color: var(--blue-meta);
+	border: none;
+	border-radius: 4px;
+	font-size: 2.2vh;
+	padding: 10px;
+	box-shadow: 0 0 18px rgba(0,0,0,0.4);
+}
+
+.btnsave {
+	color: white;
+	background-color: limegreen;
+	border: none;
+	border-radius: 4px;
+	font-size: 1em;
+	padding: 10px;
+}
+
+.btnsave:hover {
+	color: white;
+	background-color: limegreen;
+	border: none;
+	border-radius: 4px;
+	font-size: 2.2vh;
+	padding: 10px;
+	box-shadow: 0 0 18px rgba(0,0,0,0.4);
+}
+
+.btnsave:disabled {
+    background-color: #ccc;
+    color: #888;
+    border: 1px solid #ccc;
+    cursor: not-allowed;
+}
+
+.horario {
+    display: inline-block;
+    align-items: center;
+}
+
+.horario input {
+    height: 64px;
+    width: 64px;
+    font-size: 2vw;
+    text-align: center;
+}
+
+.horario-twodots {
+    	font-size: 3em
+}
+
+.titulo input {
+	width: 75%;
+	height: 32px;
+	font-size: 1.4em;
+}
+
+.tempo-acionamento input {
+	width: 10%;
+	height: 32px;
+	font-size: 1.4em;
+}
+
+.inside-modal input {
+	margin: 8px;
+}
+
+.icon {
+	width: 3vh;
+	margin: 0;
+	align-content: center;
+}
+
+input[type="number"] {
+    -moz-appearance: textfield; /* Firefox */
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+#custom-checkbox input {
+    position: absolute;
+    opacity: 0;
+}
+
+#custom-checkbox span {
+    display: inline-block;
+    width: 60px;
+    height: 20px;
+	border-radius: 8px;
+	padding: 2px;
+    background-color: rgb(250, 151, 151);
+	color: rgb(168, 37, 37);
+	padding-block: 10px;
+	margin-block: 16px;
+}
+
+#custom-checkbox input:checked + span {
+    background-color: #004e7e; /* Cor quando marcado */
+	color: white;
+	user-select: none;
+}
+
+#custom-checkbox label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+}
+
+#output {
+	list-style-type: none;
+	margin: 24px;
+}
+
+.linha {
+	border-bottom: solid 0.1px #ccc;
+	margin-block: 8px;
+	text-align: justify;
+}
+
+</style>
+</head>
+<body>
+
+<div class="tab">
+	<button class="tablinks active" onclick="openTab(event, &#39;Cadastro&#39;)"><img class="button-icon" src="./clock.png"><p>Cadastro de Rotinas</p></button>
+	<button class="tablinks" onclick="openTab(event, &#39;Manual&#39;)"><img class="button-icon" src="./help.png"><p>Manual</p></button>
+	<button class="tablinks" onclick="openTab(event, &#39;Suporte&#39;)"><img class="button-icon" src="./tool.png"><p>Suporte</p></button>
+</div>
+
+
+
+<div id="Cadastro" class="tabcontent" style="display: block;">
+    
+	<h2 id="sem-rotina">Parece que não há rotinas cadastradas. Utilize o botão abaixo para inserir uma nova!</h2>
+	<div id="output">
+    </div>
+	<button id="rotina-config" class="btnadd" onclick="criar-rotina()">+ Adicionar Rotina</button>
+
+</div>
+
+<div id="Manual" class="tabcontent" style="display: none;">
+	<div class="list">
+		<h2>Como criar uma rotina:</h2>
+		<h2>Solução de problemas:</h2>
+	</div>
+</div>
+
+<div id="Suporte" class="tabcontent" style="display: none;">
+	<h3>Suporte</h3>
+	<p>Se vira</p>
+</div>
+
+<!-- The Modal -->
+<div id="myModal" class="modal">
+
+  <!-- Modal content -->
+	<div class="modal-content">
+	<div class="window-top">
+		<p><b>NOVA ROTINA:</b></p><span class="close">×</span>
+	</div>
+		<div class="inside-modal">
+            
+			<div class="horario">
+                <input id="hora" type="number" min="1" max="24">
+            </div>
+			<span class="horario-twodots">:</span>
+			<div class="horario">
+				<input id="minuto" type="number" min="1" max="59">
+			</div>
+			<div class="titulo">
+             	<img class="icon" src="edit.svg">
+             	<input id="titulo" type="text" placeholder="Título">
+           	</div>
+			<label id="custom-checkbox">
+				<input id="DOM" type="checkbox">
+				<span>DOM</span>
+			</label>
+			<label id="custom-checkbox">
+				<input id="SEG" type="checkbox">
+				<span>SEG</span>
+			</label>
+			<label id="custom-checkbox">
+				<input id="TER" type="checkbox">
+				<span>TER</span>
+			</label>
+			<label id="custom-checkbox">
+				<input id="QUA" type="checkbox">
+				<span>QUA</span>
+			</label>
+			<label id="custom-checkbox">
+				<input id="QUI" type="checkbox">
+				<span>QUI</span>
+			</label>
+			<label id="custom-checkbox">
+				<input id="SEX" type="checkbox">
+				<span>SEX</span>
+			</label>
+			<label id="custom-checkbox">
+				<input id="SAB" type="checkbox">
+				<span>SAB</span>
+			</label>
+			
+			<br><br><button class="btnsave" disabled>✓ Salvar</button>
+		</div>
+	</div>
+
+</div>
+
+<ul id="output"></ul>
+
+<script>
+ 
+if (rotinas == "") {
+	document.getElementById("sem-rotina").hidden = false;
+} else document.getElementById("sem-rotina").hidden = true;
+
+function mapearDia(diaBinario) {
+  // Mapeamento de binário para dia da semana
+  const diasSemana = ["DOM", "SEG", "TER", "QUA", "QUI", "SEX", "SAB"];
+  let diasSelecionados = "";
+
+  for (let i = 0; i < diaBinario.length; i++) {
+	if (diaBinario[i] === "1") {
+	  diasSelecionados += diasSemana[i] + ",";
+	}
+  }
+
+  return diasSelecionados.slice(0, -1); // Remover a última vírgula
+}
+
+var rotinas = "1;ENTRADA;03:38;0101010.2;ALMOCO;12:58;0101010.3;JANTA;13:00;1111111.4;ENTRADA;13:2;0000000.5;ALMOCO;13:3;0101010.6;JANTA;13:5;1111111.7;ENTRADA;12:39;0000000.8;ALMOCO;12:40;0101010.9;JANTA;12:41;1111111.";
+
+var linhas = rotinas.split(".");
+var ulElement = document.getElementById("output");
+
+linhas.forEach(function (linha) {
+  if (linha.trim() !== "") {
+	var dados = linha.split(";");
+	var diaSemana = mapearDia(dados[3]);
+	var liElement = document.createElement("li");
+	
+	liElement.classList.add("linha");
+	
+	// Removendo pontos e vírgulas da exibição
+	liElement.textContent = `${dados[0]} - ${dados[1]} - ${dados[2]} - ${diaSemana}`;
+	ulElement.appendChild(liElement);
+  }
+});
+
+var modal = document.getElementById("myModal");
+var btn = document.getElementById("rotina-config");
+var btnsave = document.getElementsByClassName("btnsave")[0];
+var span = document.getElementsByClassName("close")[0];
+
+function SalvarRotina() {
+    let titulo = document.getElementById("titulo").value;
+    let hora = document.getElementById("hora").value;
+    let minuto = document.getElementById("minuto").value;
+
+    const semana = [
+        document.getElementById("DOM").checked,
+        document.getElementById("SEG").checked,
+        document.getElementById("TER").checked,
+        document.getElementById("QUA").checked,
+        document.getElementById("QUI").checked,
+        document.getElementById("SEX").checked,
+        document.getElementById("SAB").checked
+    ];
+
+    if (titulo !== "") {
+        rotinas.push(novaRotina);  // Adicionar a nova rotina ao array
+
+        document.getElementById("output").innerHTML = `1; ${titulo};${semana.join(";")}${hora}:${minuto}`;
+        document.getElementById("sem-rotina").hidden = true;
+
+        console.log("Rotina adicionada:", novaRotina);
+        console.log("Lista de rotinas:", rotinas);
+    }
+}
+
+titulo.addEventListener('input', function() {
+	if (titulo.value.trim() != "") {
+	    btnsave.disabled = false;
+	} else {
+	    btnsave.disabled = true;
+	}
+});
+	
+
+btn.onclick = function() {
+	modal.style.display = "block";
+}
+
+span.onclick = function() {
+	modal.style.display = "none";
+		titulo.value = "";
+		hora.value = "";
+		minuto.value = "";
+		for (let i = 0; i <= 6; i++) {
+			document.getElementById(["DOM", "SEG", "TER", "QUA", "QUI", "SEX", "SAB"][i]).checked = false;
+		}
+}
+
+btnsave.onclick = function() {
+	modal.style.display = "none";  
+    SalvarRotina();
+		titulo.value = "";
+		hora.value = "";
+		minuto.value = "";
+		for (let i = 0; i <= 6; i++) {
+			document.getElementById(["DOM", "SEG", "TER", "QUA", "QUI", "SEX", "SAB"][i]).checked = false;
+		}
+}
+
+window.onclick = function(event) {
+	if (event.target == modal) {
+		modal.style.display = "none";
+		titulo.value = "";
+		hora.value = "";
+		minuto.value = "";
+		for (let i = 0; i <= 6; i++) {
+			document.getElementById(["DOM", "SEG", "TER", "QUA", "QUI", "SEX", "SAB"][i]).checked = false;
+		}
+	}
+}
+
+function openTab(evt, TabName) {
+	var i, tabcontent, tablinks;
+	tabcontent = document.getElementsByClassName("tabcontent");
+	for (i = 0; i < tabcontent.length; i++) {
+		tabcontent[i].style.display = "none";
+	}
+	tablinks = document.getElementsByClassName("tablinks");
+	for (i = 0; i < tablinks.length; i++) {
+		tablinks[i].className = tablinks[i].className.replace(" active", "");
+	}
+	document.getElementById(TabName).style.display = "block";
+	evt.currentTarget.className += " active";
+}
+</script>
+</body>
+</html>

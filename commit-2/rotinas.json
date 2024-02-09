@@ -1,0 +1,28 @@
+{
+  "rotinas": [
+    {
+      "id": 1,
+      "titulo": "Rotina A",
+      "tempo_acionamento": 10,
+      "hora": 12,
+      "minuto": 30,
+      "dias_semana": "12345"
+    },
+    {
+      "id": 2,
+      "titulo": "Rotina B",
+      "tempo_acionamento": 15,
+      "hora": 15,
+      "minuto": 0,
+      "dias_semana": "67"
+    },
+    {
+      "id": 3,
+      "titulo": "Rotina C",
+      "tempo_acionamento": 5,
+      "hora": 8,
+      "minuto": 45,
+      "dias_semana": "1234567"
+    }
+  ]
+}

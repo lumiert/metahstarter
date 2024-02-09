@@ -1,0 +1,1 @@
+O tempo e as rotinas são exibidos na tela, mas as rotinas ainda não possuem formatação, por enquanto só leem do arquivo json alocado no servidor.

@@ -1,0 +1,1 @@
+A criação e edição de rotinas funciona perfeitamente com ID exlusivos e alterando as demais rotinas, no próximo sera implementado outras inputs para cada campo.

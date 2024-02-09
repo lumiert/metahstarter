@@ -1,0 +1,1 @@
+Ele funciona e compara o horário atual com os gravados no rotinas.txt, mas ainda falta comparar se o dia atual bate com a mesma linha correspondente do horário registrado no arquivo.

@@ -1,0 +1,69 @@
+const express = require('express');
+const bodyParser = require('body-parser');
+const app = express();
+const port = 3000;  // Alterado para a porta 3000
+
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+
+// Rota para obter o horário atual (método GET)
+app.get('/horario', (req, res) => {
+    const horarioAtual = new Date().toLocaleTimeString();
+    res.send(horarioAtual);
+});
+
+// Rota para a página principal
+app.get('/', (req, res) => {
+    // Obtém o horário atual
+    const horarioAtual = obterHorarioAtual();
+
+    // Envia a resposta com o horário atual
+    res.send(`
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Atualizador de Horário</title>
+            <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+        </head>
+        <body>
+            <h1>Horário Atual: <span id="horarioAtual">Carregando...</span></h1>
+
+            <script>
+                // Função para atualizar o horário usando AJAX
+                function atualizarHorario() {
+                    $.ajax({
+                        url: '/horario', // Rota no servidor para obter o horário
+                        method: 'GET',
+                        dataType: 'text',
+                        success: function (data) {
+                            $('#horarioAtual').text(data); // Atualiza o conteúdo da <span>
+                        },
+                        error: function (error) {
+                            console.error('Erro ao obter o horário:', error);
+                        }
+                    });
+                }
+
+                // Atualiza o horário a cada 1 segundo
+                setInterval(atualizarHorario, 1000);
+
+                // Inicializa o horário
+                atualizarHorario();
+            </script>
+        </body>
+        </html>
+    `);
+});
+
+// Função para obter o horário atual
+function obterHorarioAtual() {
+    const dataAtual = new Date();
+    const horarioFormatado = dataAtual.toLocaleString();
+    return horarioFormatado;
+}
+
+// Define a porta em que o servidor irá escutar
+app.listen(port, () => {
+    console.log(`Servidor rodando em http://localhost:${port}`);
+});

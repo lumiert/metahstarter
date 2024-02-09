@@ -1,0 +1,1 @@
+Ele aciona com horário fixo, lê e grava.
