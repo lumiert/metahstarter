@@ -1,18 +1,1 @@
-
-1;ttesf;08:45;1235.
-2;ttesf;09:00;157.
-3;ttesf;09:15;1234567.
-4;sdcscsc;09:30;1256.
-5;sdcscsc;09:45;1257.
-6;sdcscsc;10:00;5.
-7;sdcscsc;10:15;567.
-8;sdcscsc;10:30;15.
-9;hndnsf;10:45;1256.
-10;hndnsf;11:00;1234567.
-11;hnddsvdsnsf;11:15;5.
-12;hnddsvdsnsf;11:30;5.
-13;hnddsvdsnsf;11:45;5.
-14;hnddsvdsnsf;12:35;5.
-15;hnddsvdsnsf;12:40;123467.
-16;hnddsvdsnsf;13:00;123467.
-17;adwadsad;11:16;0123456.
+1;Rotina 01;12:00;0123456.
