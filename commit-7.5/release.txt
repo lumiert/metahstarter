@@ -1,0 +1,1 @@
+Tudo funciona, mas com bugs na segunda execução.

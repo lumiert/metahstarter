@@ -1,0 +1,1 @@
+Tudo aparentemente funciona, leitura e gravação, horário e dias funcionam como o esperado. Processo de bug hunting.

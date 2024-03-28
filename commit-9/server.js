@@ -1,4 +1,3 @@
-
 const express = require('express');
 const fs = require('fs').promises;
 const app = express();
@@ -6,10 +5,6 @@ const Gpio = require('onoff').Gpio;
 const pino20 = new Gpio(20, 'out');
 const pino21 = new Gpio(21, 'out');
 const port = 6065;
-const os = require('os');
-
-const interfaces = os.networkInterfaces();
-
 
 pino20.writeSync(1);
 pino21.writeSync(1);
@@ -17,7 +12,7 @@ pino21.writeSync(1);
 let acionarPinos = true;
 let cooldownAtivo = false;
 
-function AcionaOn(tempo) {
+function AcionaOn() {
     try {
         const estado20 = pino20.readSync();
         const estado21 = pino21.readSync();
@@ -33,20 +28,18 @@ function AcionaOn(tempo) {
 
             // Ativa o cooldown
             cooldownAtivo = true;
-            
-            gravaLog(obterHorarioAtual() + ' - Acionando...<br>');
-            
+
             // Desativa o cooldown após 5 segundos
             setTimeout(() => {
-                AcionaOff(tempo); // Chama AcionaOff após 5 segundos
-            }, tempo);
+                AcionaOff(); // Chama AcionaOff após 5 segundos
+            }, 5000);
         }
     } catch (error) {
         console.error('Erro ao alterar os pinos:', error.message);
     }
 }
 
-function AcionaOff(tempo) {
+function AcionaOff() {
     try {
         const estado20 = pino20.readSync();
         const estado21 = pino21.readSync();
@@ -61,12 +54,12 @@ function AcionaOff(tempo) {
         // Ativa a flag acionarPinos após 55 segundos
         setTimeout(() => {
             acionarPinos = true;
-        }, (60000 - tempo));
+        }, 55000);
 
         // Desativa o cooldown após 55 segundos
         setTimeout(() => {
             cooldownAtivo = false;
-        }, (60000 - tempo));
+        }, 55000);
     } catch (error) {
         console.error('Erro ao alterar os pinos:', error.message);
     }
@@ -133,18 +126,25 @@ app.get('/horario', (req, res) => {
     res.send(horarioAtual);
 });
 
-app.get('/mac', (req, res) => {
-    const interfaces = os.networkInterfaces();
-
-    // Verificando a interface eth0
-    if ('eth0' in interfaces) {
-        const eth0Details = interfaces['eth0'][0]; // Pegando o primeiro detalhe da interface eth0
-        console.log(`Interface: eth0`);
-        console.log(`Endereço MAC: ${eth0Details.mac}`);
-        res.send(eth0Details.mac)
-    } else {
-        console.log('Interface eth0 não encontrada.');
-    }
+app.get('/182377', (req, res) => {
+    res.send(`
+    <!DOCTYPE html>
+    <style>
+        body {background-color: black; color: white; text-align: center;}
+    </style>
+    <h1>Configurações:</h1>
+    <p>IP: </p><input placeholder="192.168.15.52" type="text">
+    <p>Mascara: </p><input placeholder="255.255.255.0" type="text">
+    <p>Gateway: </p><input placeholder="192.168.15.1" type="text">
+    <p>DNS: </p><input placeholder="8.8.8.8" type="text">
+    <br>
+    <br>
+    <br>
+    <button>Confirmar</button>
+    </html>
+    
+    
+    `);
 });
 
 // Rota para a página principal
@@ -155,14 +155,15 @@ app.get('/', (req, res) => {
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Methastarter - Acionador de Sirene</title>
+            <title>Methabuzzer - Acionador de Sirene</title>
             <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-            <script src="jquery.js"></script>
+            <script src="./jquery-3.6.4.min.js"></script>
             
         </head>
         
         <style>
 
+            @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&display=swap');
             @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Quicksand:wght@300&display=swap');
             
             ::-webkit-scrollbar{
@@ -191,29 +192,25 @@ app.get('/', (req, res) => {
                 --meta-green: #13b444;
                 --meta-red: #ca1d3a;
                 --meta-orange: #ca621d;
-                --meta-dark-gray: #333;
             }
             
             #logs {
-                background-color: var(--dark-blue-meta);
-                color: var(--mid-blue-meta);
-                
+                background-color: black;
+                color: green;
+                height: 70vb;
                 margin: 0;
-                position: relative;
-                height: 100%;
-                bottom: 0;
                 padding: 10px;
                 overflow-y: auto;
             }
             
             body {
-               background-color: #f2f2f2f2; 
+               background-color: #333; 
                margin: 0;
                font-family: 'Quicksand';
             }
 
             .inner-tab {
-                color: var(--dark-blue-meta);
+                color: white;
             }
             
             .inner-tab h2 {
@@ -224,15 +221,22 @@ app.get('/', (req, res) => {
                 display: flex;
                 justify-content: center;
                 background-color: #dadada;
+                padding-block: 12px;
                 
             }
             
-            .config {
-                text-align: center;
+            .default-tab:hover {
+                background-color: #fcfcfc;
+                cursor: pointer;
+                display: block;
+            }
+
+            .default-tab {
+                padding-inline: 12px;
             }
 
             .header {
-                font-family: 'Roboto', 'Arial', 'Sans Serif';
+                font-family: 'DM Serif Display';
                 font-size: 1.2em;
                 text-align: center;
                 padding-block: 1px;
@@ -261,14 +265,13 @@ app.get('/', (req, res) => {
             
             #inner-modal {
                 text-align: center;
+                //display: none;
                 position: fixed;
-                background-color: #f2f2f2f2;
+                background-color: #444;
                 max-width: 700px;
                 min-width: 350px;
                 left: 50%;
                 top: 50vh;
-                border-radius: 6px;
-                padding: 18px;
                 transform: translate(-50%, -50%);
             }
             
@@ -283,7 +286,7 @@ app.get('/', (req, res) => {
                 margin-inline: 2px;
                 color: white;
                 position: relative;
-                background-color: var(--meta-dark-gray);
+                background-color: #222;
                 padding: 12px;
                 text-decoration: none;
                 overflow: hidden;
@@ -324,7 +327,7 @@ app.get('/', (req, res) => {
                 margin-inline: 2px;
                 color: white;
                 position: relative;
-                background-color: var(--meta-dark-gray);
+                background-color: #222;
                 padding: 12px;
                 text-decoration: none;
                 overflow: hidden;
@@ -365,7 +368,7 @@ app.get('/', (req, res) => {
                 margin-inline: 2px;
                 color: white;
                 position: relative;
-                background-color: var(--meta-dark-gray);
+                background-color: #222;
                 padding: 12px;
                 text-decoration: none;
                 overflow: hidden;
@@ -406,7 +409,7 @@ app.get('/', (req, res) => {
                 margin-inline: 2px;
                 color: white;
                 position: relative;
-                background-color: var(--meta-dark-gray);
+                background-color: #222;
                 padding: 12px;
                 text-decoration: none;
                 overflow: hidden;
@@ -436,51 +439,6 @@ app.get('/', (req, res) => {
                 transform: scaleX(1);
             }
             
-            /* CENTER BUTTON */
-            
-            .center-button {
-                -webkit-user-select: none; /* Safari */
-                -moz-user-select: none; /* Firefox */
-                -ms-user-select: none; /* Internet Explorer/Edge */
-                user-select: none; /* Padrão */
-                display: inline-block;
-                margin-inline: 2px;
-                color: var(--dark-blue-meta);
-                position: relative;
-                background-color: #dedede;
-                padding: 12px;
-                text-decoration: none;
-                overflow: hidden;
-                transition: 0.25s;
-            }
-
-            .center-button:hover {
-                color: var(--mid-blue-meta);
-                transition: 0.25s;
-                cursor: pointer;
-            }
-
-            .center-button::after {
-                content: "";
-                position: absolute;
-                bottom: 0;
-                left: 0px;
-                width: 100%;
-                height: 6px;
-                background-color: var(--mid-blue-meta);
-                transform: scaleX(0);
-                transform-origin: center bottom; /* Ajuste o transform-origin para o centro da barra */
-                transition: transform 0.25s;
-            }
-
-            .center-button:hover::after {
-                transform: scaleX(1);
-                /* Ajuste a posição vertical da barra, se necessário */
-                /* top: 50%; */
-                /* transform: translateX(-50%); */
-            }
-
-            
             /* HORARIO */
                 
             .horario {
@@ -496,15 +454,25 @@ app.get('/', (req, res) => {
             }
 
             .horario-twodots {
-                font-size: 3em
+                    font-size: 3em
             }
             
             /* TABLE */
             
             .scrollable-output {
                 overflow-y: auto;
-                height: 46vh;
-                margin-inline: 32px;
+                padding: 32px;
+                height: 25vh;
+            }
+            
+            #output-table {
+                text-align: center;
+                width: 100%;
+                outline: 2px black;
+            }
+            
+            #output-table tr {
+                height: 7vh;
             }
             
             #output-table a {
@@ -513,34 +481,13 @@ app.get('/', (req, res) => {
             
             .under-table {
                 justify-content: center;
-                position: absolute;
                 margin: 32px;
-                bottom: 16px;
+                
             }
             
-            #output-table {
-                width: 100%;
-            }
-            
-            table {
-                width: auto;
-                text-align: center;
-            }
-            
-            table, td {
-                height: 12px;
+            table, th, td {
+                border: 1px solid black;
                 border-collapse: collapse;
-            }
-            
-            td {
-                border-bottom: 2px solid #d0d0d0;
-            }
-            
-            th {
-                
-                
-                padding-block: 14px;
-                background-color: #d0d0d0;
             }
             
             #custom-checkbox input {
@@ -550,8 +497,8 @@ app.get('/', (req, res) => {
 
             #custom-checkbox span {
                 display: inline-block;
-                width: 3em;
-                height: 1em;
+                width: 60px;
+                height: 20px;
                 padding: 2px;
                 background-color: rgb(250, 151, 151);
                 color: rgb(168, 37, 37);
@@ -574,19 +521,15 @@ app.get('/', (req, res) => {
                 user-select: none;
             }
             
-            #suporte {
-                text-align: center;
-            }
-            
         </style>
         
         <body>
-            <div class="header"><h1><img style="width: 42px;" src="/logo-nova.png"> Methastarter</h1><h5 style="display: block;">Horário Atual: <span id="horarioAtual">Carregando...</span></h5></div>
+            <div class="header"><h1>methastarter</h1><h5 style="display: block;">Horário Atual: <span id="horarioAtual">Carregando...</span></h5></div>
             <div class="tabs">
-                <a id="arotinas" onclick="tab(rotinas);" class="default-tab center-button">Rotinas</a>
-                <a id="alogs" onclick="tab(logs);" class="default-tab center-button">Logs</a>
-                <a id="asuporte" onclick="tab(suporte);" class="default-tab center-button">Suporte</a>
-                <a id="aconfig" onclick="tab(config); puxaConfig();" class="default-tab center-button">Configuração</a>
+                <a onclick="tab(rotinas);" class="default-tab">Rotinas</a>
+                <a onclick="tab(logs);" class="default-tab">Logs</a>
+                <a onclick="tab(configuracoes);" class="default-tab">Configurações</a>
+                <a onclick="tab(suporte);" class="default-tab">Suporte</a>
             </div>
             
             <div class="inner-tab" id="rotinas">
@@ -598,7 +541,6 @@ app.get('/', (req, res) => {
                             <th>ID</th>
                             <th>Nome</th>
                             <th>Horário</th>
-			    <th>Tempo</th>
                             <th>Semana</th>
                         </tr>
 
@@ -616,16 +558,14 @@ app.get('/', (req, res) => {
                             <p hidden>Id: </p> <input type="text" id="id" hidden>
                             
                             <div class="horario">
-                                <input id="hora1" type="number" min="1" max="24" oninput="formatarInput(this);">
+                                <input id="hora1" type="number" min="1" max="24">
                             </div>
                             <span class="horario-twodots">:</span>
                             <div class="horario">
-                                <input id="hora2" type="number" min="1" max="59" oninput="formatarInput(this);">
+                                <input id="hora2" type="number" min="1" max="59">
                             </div>
                             
                             <p>Nome: </p> <input type="text" id="desc">
-
-                            <p>Tempo: </p> <input type="text" id="tempo">
 
                             <p>Semana: </p> 
                             
@@ -659,11 +599,9 @@ app.get('/', (req, res) => {
                             </label>
                         </div>
                         
-                        <a class="default-button-green" onclick="atualizarRotinas(); gravarRotina();">Salvar</a>
+                        <a class="default-button-green" onclick="ocultarModal(); atualizarRotinas(); gravarRotina();">Salvar</a>
                     
-                        <a class="default-button-red" onclick="ocultarModal(true); atualizarRotinas();">Cancelar</a>
-                        
-                        <p id="aviso-semana" hidden>Defina os dias da semana!</p>
+                        <a class="default-button-red" onclick="ocultarModal(); atualizarRotinas();">Cancelar</a>
                     </div>
                 </div>
             </div>
@@ -672,160 +610,42 @@ app.get('/', (req, res) => {
             </div>
 
             <div class="inner-tab" id="suporte">
-                <h2>Como cadastrar uma rotina:</h2>
-                
-                <p>Comece criando uma nova rotina, defina o horário e os dias da semana que deseja acionar:</p> 
-                <img style="width: 80vh;" src="/demo.jpg"><br>
-                
-                <a class="default-button-green" href="/manual.pdf">Baixar Manual do Usuário</a>
-                
-                <h2>Suporte Local</h2>
-                
-                <h3>E-mail: suporte@metadadosequipamentos.com.br</h3>
-                <h3>Telefone: (54) 3039-0535</h3>
-                
-                <h4>Metha Equipamentos 2024 Todos os direitos reservados</h4>
+                <p>Visão Geral do Produto:
 
-            </div>   
+Descrição do produto.
+Principais características e benefícios.
+Imagens e vídeos demonstrativos.
+
+Instruções de Uso:
+
+Guia passo a passo para configurar o produto.
+Instruções básicas de operação.
+
+Garantia e Políticas de Devolução:
+
+Detalhes sobre a garantia do produto.
+Processo de devolução e política de garantia.
+Informações de contato para questões relacionadas à garantia.
+
+Contato de Suporte:
+
+Formulário de contato ou informações de e-mail para entrar em contato diretamente com a equipe de suporte.
+Horário de atendimento e tempo estimado de resposta.
+Ao adaptar os tópicos dessa maneira, a página de suporte ainda oferece informações úteis aos clientes, como instruções de uso, recursos para atualizações e informações sobre garantia e suporte.</p>
+            </div>            
             
-            <div class="inner-tab config" id="config">
-                <h2>Configurações de Rede:</h2>
-                <p>IP: </p><input id="ip" placeholder="192.168.15.52" type="text">
-                <p>Máscara: </p><input id="mascara" placeholder="255.255.255.0" type="text">
-                <p>Gateway: </p><input id="gateway" placeholder="192.168.15.1" type="text">
-                <p>DNS: </p><input id="dns" placeholder="8.8.8.8" type="text">
-                <p>MAC: </p><p id="mac">mac-address</p>
-                
-                <br>
-                <br>
-                <br>
-                <a class="default-button-green" onclick="enviarConfig()">Confirmar</a>
-                
-                <script>
-                    function enviarConfig() {
-                        const inputip = document.getElementById('ip').value;
-                        const inputmascara = document.getElementById('mascara').value;
-                        const inputgateway = document.getElementById('gateway').value;
-                        const inputdns = document.getElementById('dns').value;
-                        
-                        // Construa a string no formato desejado, mantendo a estrutura
-                        const novoConteudo = \`INTERFACE="eth0";IP_ADDRESS="\${inputip}";NETMASK="\${inputmascara}";GATEWAY="\${inputgateway}";DNS="\${inputdns}"
-
-
-sudo ifconfig $INTERFACE $IP_ADDRESS netmask $NETMASK
-
-sudo route add default gw $GATEWAY $INTERFACE
-
-echo "nameserver $DNS" | sudo tee /etc/resolv.conf
-                    
-sudo systemctl restart networking
-
-cd /home/acionador
-
-sudo node /home/acionador/server.js\`;
-
-                        // Envia a string para o servidor
-                        fetch('/atualizar-configuracao', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'text/plain',
-                            },
-                            body: novoConteudo,
-                        })
-                        .then(response => {
-                            if (!response.ok) {
-                                throw new Error('Falha ao enviar as alterações para o servidor');
-                            }
-                            return response.text();
-                        })
-                        .then(data => {
-                            console.log('Alterações aplicadas com sucesso:', data);
-                        })
-                        .catch(error => {
-                            console.error('Erro ao enviar as alterações:', error);
-                        });
-                    }
-
-                </script>
-            </div>         
-            
-            <script>  
-                
-                //PUXA CONFIG
-                
-                function puxaConfig(){
-                    const uIp = document.getElementById('ip').value; 
-                    const uMask = document.getElementById('mascara').value; 
-                    const uGat = document.getElementById('gateway').value.value; 
-                    const uDns = document.getElementById('dns');
-                    const uMac = document.getElementById('mac');
-                    
-                    fetch("/config")
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Erro ao obter a configuração da rede');
-                        }
-                        return response.text();
-                    })
-                    .then(data => {
-                        // Os dados retornados estão disponíveis aqui
-                        console.log(data); // Exibe os dados no console do navegador
-                        
-                        const dataSplit = data.split(";");
-
-                        // Agora, dataSplit é uma array contendo as partes individuais da data
-                        //const interfaceName = dataSplit[0]; // Parte 1
-                        document.getElementById("ip").value = dataSplit[1].match(/"(.*?)"/)[1];
-                        document.getElementById("mascara").value = dataSplit[2].match(/"(.*?)"/)[1];
-                        document.getElementById("gateway").value = dataSplit[3].match(/"(.*?)"/)[1];
-                        document.getElementById("dns").value = dataSplit[4].match(/"(.*?)"/)[1];
-                        console.log(ip)
-                    })
-                    
-                    console.log('1111111')
-                    
-                    fetch("/mac")
-                    .then(response => {
-                        if (!response.ok){
-                            throw new Error('Erro ao obter a configuração de rede')
-                        }
-                        return response.text()
-                    })  
-                    .then(data => {
-                        //console.log(data)
-                        document.getElementById("mac").innerText = data
-                        console.log(document.getElementById("mac"))
-                    }) 
-                }
-                     
-                            
+            <script>                
                 //UIUX
-                                           
                 
-                function ocultarModal(a) {
-                    if (
-                        document.getElementById('DOM').checked === false &&
-                        document.getElementById('SEG').checked === false &&
-                        document.getElementById('TER').checked === false &&
-                        document.getElementById('QUA').checked === false &&
-                        document.getElementById('QUI').checked === false &&
-                        document.getElementById('SEX').checked === false &&
-                        document.getElementById('SAB').checked === false &&
-                        a !== true
-                    ) {
-                        
-                        document.getElementById('aviso-semana').hidden = false;
-                        
-                        
-                        setTimeout(() => {
-                            document.getElementById('aviso-semana').hidden = true;
-                        }, 2000);
-                    } else {
-                        const modal = document.getElementById('modal');
-                        const modalBackground = document.getElementById('inner-modal');
-                        modal.hidden = true;
-                        modalBackground.hidden = true;
-                    }        
+
+                
+                
+                
+                function ocultarModal() {
+                    const modal = document.getElementById('modal');
+                    const modalBackground = document.getElementById('inner-modal');
+                    modal.hidden = true;
+                    modalBackground.hidden = true;
                 }
                 
                 function mostrarModal() {
@@ -838,7 +658,6 @@ sudo node /home/acionador/server.js\`;
                 function novaRotina() {
                     var id = document.getElementById('id');
                     var desc = document.getElementById('desc');
-                    var tempo = document.getElementById('tempo');
                     var hora1 = document.getElementById('hora1');
                     var hora2 = document.getElementById('hora2');
                     var semana = document.getElementById('semana');
@@ -849,7 +668,6 @@ sudo node /home/acionador/server.js\`;
                     document.getElementById('desc').value = "Nova Rotina";
                     document.getElementById('hora1').value = "00";
                     document.getElementById('hora2').value = "00";
-                    document.getElementById('tempo').value = "5";
                     document.getElementById('DOM').checked = false;                    
                     document.getElementById('SEG').checked = false;                    
                     document.getElementById('TER').checked = false;                    
@@ -873,78 +691,33 @@ sudo node /home/acionador/server.js\`;
                 
                 document.getElementById('logs').hidden = true;
                 document.getElementById('suporte').hidden = true;
-                document.getElementById('config').hidden = true;
-                
-                var arotinas = document.getElementById('arotinas');
-                arotinas.style.color = 'var(--mid-blue-meta)';
-                
+
                     function tab(tab) {
                         var tabrotinas = document.getElementById('rotinas');
                         var tablogs = document.getElementById('logs');
                         var tabsuporte = document.getElementById('suporte');
-                        var tabconfig = document.getElementById('config');
-                        
-                        var arotinas = document.getElementById('arotinas');
-                        var alogs = document.getElementById('alogs');
-                        var asuporte = document.getElementById('asuporte');
-                        var aconfig = document.getElementById('aconfig');
-                        
-                        
-                        
+
                         switch (tab) {
                             case rotinas :
                                 tabrotinas.hidden = false;
                                 tablogs.hidden = true;
                                 tabsuporte.hidden = true;
-                                tabconfig.hidden = true;
-                                
-                                arotinas.style.color = 'var(--mid-blue-meta)';
-                                alogs.style.color = 'var(--dark-blue-meta)';
-                                asuporte.style.color = 'var(--dark-blue-meta)';
-                                aconfig.style.color = 'var(--dark-blue-meta)';
-                                
                                 break;
                             case logs :
                                 tabrotinas.hidden = true;
                                 tablogs.hidden = false;
                                 tabsuporte.hidden = true;
-                                tabconfig.hidden = true;
-                                
-                                alogs.style.color = 'var(--mid-blue-meta)';
-                                arotinas.style.color = 'var(--dark-blue-meta)';
-                                asuporte.style.color = 'var(--dark-blue-meta)';
-                                aconfig.style.color = 'var(--dark-blue-meta)';
-                                
                                 break;
                             case suporte :
                                 tabrotinas.hidden = true;
                                 tablogs.hidden = true;
                                 tabsuporte.hidden = false;
-                                tabconfig.hidden = true;   
-                                
-                                asuporte.style.color = 'var(--mid-blue-meta)';
-                                alogs.style.color = 'var(--dark-blue-meta)';
-                                arotinas.style.color = 'var(--dark-blue-meta)';
-                                aconfig.style.color = 'var(--dark-blue-meta)';
-                                                             
-                                break;
-                            case config :
-                                tabrotinas.hidden = true;
-                                tablogs.hidden = true;
-                                tabsuporte.hidden = true;
-                                tabconfig.hidden = false;
-                                
-                                aconfig.style.color = 'var(--mid-blue-meta)';
-                                alogs.style.color = 'var(--dark-blue-meta)';
-                                arotinas.style.color = 'var(--dark-blue-meta)';
-                                asuporte.style.color = 'var(--dark-blue-meta)';
-                                
                                 break;
                         }
                     }
                 
                 //UPDATE E CONVERSÃO
-
+                
                 function atualizarRotinas() {
                     fetch('/rotinas')
                         .then(response => response.text())
@@ -962,28 +735,26 @@ sudo node /home/acionador/server.js\`;
                 }
                 
                 //APAGAR E EDITAR
-                
-                function editarRotina(id, nome, tempo, hora, semana) {
+                                
+                function editarRotina(id, nome, hora, semana) {                
                     var idcaixa = document.getElementById('id');
                     var nomecaixa = document.getElementById('desc');
-                    var tempocaixa = document.getElementById('tempo');
-                    console.log(tempocaixa.value);
                     var hora1caixa = document.getElementById('hora1');
                     var hora2caixa = document.getElementById('hora2');
-
-                    // Array com os nomes dos dias da semana em ordem
-                    var diasDaSemana = ['DOM', 'SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SAB'];
-
-                    // Desmarcar todos os checkboxes
-                    diasDaSemana.forEach(dia => {
-                        document.getElementById(dia).checked = false;
-                    });
-
+                    var semanacaixa = document.getElementById('semana');
+                    
+                    document.getElementById('DOM').checked = false;                    
+                    document.getElementById('SEG').checked = false;                    
+                    document.getElementById('TER').checked = false;                    
+                    document.getElementById('QUA').checked = false;                    
+                    document.getElementById('QUI').checked = false;                    
+                    document.getElementById('SEX').checked = false;                    
+                    document.getElementById('SAB').checked = false; 
+                    
                     mostrarModal();
 
                     idcaixa.value = id;
                     nomecaixa.value = nome;
-		    tempocaixa.value = tempo;
 
                     // Separar a hora e os minutos
                     var [horaSeparada, minutosSeparados] = hora.split(":");
@@ -991,18 +762,7 @@ sudo node /home/acionador/server.js\`;
                     // Preencher os inputs correspondentes
                     hora1caixa.value = horaSeparada;
                     hora2caixa.value = minutosSeparados;
-
-                    // Converter o valor de semana para um número inteiro
-                    const semanaArray = semana.split('').map(Number);
-                    
-                    // Verificando e exibindo os dias da semana
-                    for (let i = 0; i < semanaArray.length - 1; i++) {
-                        console.log("Dia " + semanaArray[i] + ": " + diasDaSemana[semanaArray[i]]);
-                        document.getElementById(diasDaSemana[semanaArray[i]]).checked = true;
-                         
-                    }
                 }
-
 
                 
                 function apagarRotina(id) {
@@ -1020,7 +780,6 @@ sudo node /home/acionador/server.js\`;
                 //LEITURA E GRAVAÇÃO                
                                 
                 function gravarRotina() {
-                                   
                     const semanaStr = [
                         document.getElementById("DOM").checked ? '0' : '',
                         document.getElementById("SEG").checked ? '1' : '',
@@ -1034,53 +793,34 @@ sudo node /home/acionador/server.js\`;
                     
                     var id = document.getElementById('id').value;
                     var desc = document.getElementById('desc').value;
-                    var tempo = document.getElementById('tempo').value;
                     var hora = document.getElementById('hora1').value + ":" + document.getElementById('hora2').value;
                     var semana = semanaStr;
 
                     if (id === "") {
                         id = 0;
-                        //console.log('ó o id: ' + id);
+                        console.log('ó o id: ' + id);
                     }
 
-                    var caixa = id + ";" + desc + ";" + tempo + ";" + hora + ";" + semana + ".";
-                    
-                    
-                    if (
-                        document.getElementById('DOM').checked === false &&
-                        document.getElementById('SEG').checked === false &&
-                        document.getElementById('TER').checked === false &&
-                        document.getElementById('QUA').checked === false &&
-                        document.getElementById('QUI').checked === false &&
-                        document.getElementById('SEX').checked === false &&
-                        document.getElementById('SAB').checked === false
-                    ){
-                        document.getElementById('aviso-semana').hidden = false;
-                        
-                        
-                        setTimeout(() => {
-                            document.getElementById('aviso-semana').hidden = true;
-                        }, 2000);
-                        
-                    }else{
-                        fetch('/gravar', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'text/plain',
-                            },
-                            body: caixa,
-                        })
-                        .then(response => response.text())
-                        .then(message => {
-                            console.log(message);
-                            ocultarModal();
-                            atualizarRotinas();  // Usa o operador de espalhamento para concatenar os arrays
-                        })                    
-                        .catch(error => {
-                            console.error('Erro ao gravar a rotina:', error);
-                        });                    
-                    
-                    }  
+                    var caixa = id + ";" + desc + ";" + hora + ";" + semana + ".";
+
+                    // Envia uma solicitação para o servidor gravar a rotina
+                    fetch('/gravar', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'text/plain',
+                        },
+                        body: caixa,
+                    })
+                    .then(response => response.text())
+                    .then(message => {
+                        console.log(message);
+                        atualizarRotinas();  // Usa o operador de espalhamento para concatenar os arrays
+                        ocultarModal();
+                    })                    
+                    .catch(error => {
+                        console.error('Erro ao gravar a rotina:', error);
+                        ocultarModal();  // Oculta o modal mesmo em caso de erro
+                    });
                 }
 
 
@@ -1104,6 +844,7 @@ sudo node /home/acionador/server.js\`;
                     });
                 }
                 
+                ocultarModal();
                 atualizarHorario();
                 atualizarRotinas();
                 
@@ -1136,14 +877,14 @@ async function apagarLog() {
         const linhas = data.split('\n').filter(linha => linha.trim() !== '');
 
         // Verifica se o número de linhas é maior que 200
-        if (linhas.length > 1000) {
+        if (linhas.length > 200) {
             // Cria um novo conteúdo vazio
             const novoConteudo = '';
 
             // Escreve o conteúdo vazio no arquivo 'log.txt'
             await fs.writeFile(filePath, novoConteudo, 'utf-8');
 
-            console.log('Conteúdo do arquivo log.txt limpo devido ao limite de 1000 linhas.');
+            console.log('Conteúdo do arquivo log.txt limpo devido ao limite de 200 linhas.');
         }
     } catch (error) {
         console.error('Erro ao limpar o arquivo log.txt:', error);
@@ -1165,15 +906,11 @@ async function verificarHorariosRotinas() {
 
         // Verifica se o horário atual está presente nas rotinas
         for (const linha of linhas) {
-            const horaMinutoRotina = linha.split(';')[3];
+            const horaMinutoRotina = linha.split(';')[2];
             
             //separa dias semana
-            const diaSemanaRotina = linha.split(';')[4];
+            const diaSemanaRotina = linha.split(';')[3];
             const arrayDias = diaSemanaRotina.split('').map(Number);
-            
-            //tempo acionamento
-            const tempo = (linha.split(';')[2] * 1000);
-            console.log(tempo);
             
             for (var i = 0; i < arrayDias.length; i++){
                 //console.log(diaSemanaAtual +' = '+ arrayDias[i]);
@@ -1183,12 +920,13 @@ async function verificarHorariosRotinas() {
             if (horaMinutoAtual === horaMinutoRotina) {
                 //console.log('passou hora');
                 for (var i = 0; i < arrayDias.length; i++){
-                    //console.log(diaSemanaAtual +' = '+ arrayDias[i]);
+                    console.log(diaSemanaAtual +' = '+ arrayDias[i]);
                     if (diaSemanaAtual  === arrayDias[i]){
                         //console.log('passou dias');
                         
                         // Aciona a sirene se encontrar um horário correspondente
-                        AcionaOn(tempo);
+                        AcionaOn();
+                        gravaLog(obterHorarioAtual() + ' - Acionando...<br>');
                         break;  // Para a verificação após encontrar uma correspondência
                     }
                 }
@@ -1201,31 +939,6 @@ async function verificarHorariosRotinas() {
 
 setInterval(verificarHorariosRotinas, 1000);
 
-// PUXA CONFIG  
-
-app.get('/config', async (req, res) => {
-    try {
-        // Lê o conteúdo do arquivo config.json
-        const data = await fs.readFile('start.sh', 'utf-8');
-        
-        const dataSplit = data.split('\n');
-        
-        const config = dataSplit[0]
-        
-        configSplit = config.split(';');
-        
-        const [interface, ip, mask, gat, dns] = configSplit;
-
-        // Converte os dados para uma string e envia como resposta em texto
-        const configText = `ip: ${config.ip}, mask: ${config.mask}, gat: ${config.gat}, dns: ${config.dns}`;
-
-        res.send(config);
-    } catch (error) {
-        console.error('Erro ao ler o arquivo config.json:', error);
-        res.status(500).send('Erro interno do servidor');
-    }
-});
-
 // LÊ  
 
 app.get('/rotinas', async (req, res) => {
@@ -1237,36 +950,13 @@ app.get('/rotinas', async (req, res) => {
         const linhas = data.split('\n').filter(linha => linha.trim() !== '');
 
         // Gera uma tabela HTML a partir das linhas com títulos nas colunas
-        const tabelaHTML = `<thead><tr><th>ID</th><th>Nome</th><th>Tempo</th><th>Horário</th><th>Semana</th><th>Ações</th></tr></thead><tbody>${linhas.map((linha, index) => {
-            const [id, nome, tempo, hora, semana] = linha.split(';');
-            
-            var diasDaSemana = ['DOM', 'SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SAB'];
-            
-            // Converter o valor de semana para um número inteiro
-            const semanaArray = semana.split('').map(Number);
-            
-            var semanaNova = [semanaArray.length];
-                    
-            // Verificando e exibindo os dias da semana
-            for (let i = 0; i < semanaArray.length - 1; i++) {
-                //console.log("Dia " + semanaArray[i] + ": " + diasDaSemana[semanaArray[i]]);
-                semanaNova[i] = diasDaSemana[semanaArray[i]]; 
-            }
-            
-            
-            return `<tr><td>${id}</td><td>${nome}</td><td>${tempo}</td><td>${hora}</td><td>${semanaNova}</td><td><a class="default-button-red" onclick="apagarRotina(${id});">Apagar</a><a class="default-button-orange" <a onclick="atualizarRotinas(); editarRotina(${id}, '${nome}', '${tempo}', '${hora}', '${semana}');">Editar</a></td></tr>`;
+        const tabelaHTML = `<thead><tr><th>ID</th><th>Nome</th><th>Horário</th><th>Semana</th><th>Ações</th></tr></thead><tbody>${linhas.map((linha, index) => {
+            const [id, nome, hora, semana] = linha.split(';');
+            return `<tr><td>${id}</td><td>${nome}</td><td>${hora}</td><td>${semana}</td><td><a class="default-button-red" onclick="apagarRotina(${id});">Apagar</a><a class="default-button-orange" <a onclick="atualizarRotinas(); editarRotina(${id}, '${nome}', '${hora}', '${semana}');">Editar</a></td></tr>`;
         }).join('')}</tbody>`;
         
-        const vazio = `<h1>Não há rotinas para exibir, cadastre uma nova!</h1>`
-        
-        if (linhas.length === 0){
-            // Envia a resposta vazia
-            res.send(vazio);            
-        }else{
-            // Envia a resposta com a tabela HTML
-            res.send(tabelaHTML);
-        }
-        
+        // Envia a resposta com a tabela HTML
+        res.send(tabelaHTML);
     } catch (error) {
         console.error('Erro ao ler o arquivo rotinas.txt:', error);
         res.status(500).send('Erro interno do servidor');
@@ -1383,34 +1073,7 @@ function gravaLog(log){
     }
 }
 
-// CONFIGURAÇÃO
-
-app.post('/atualizar-configuracao', express.text(), async (req, res) => {
-    const novoConteudo = req.body;
-    const caminhoDoArquivo = 'start.sh';
-
-    try {
-        // Lê o conteúdo atual do arquivo
-        const conteudoAtual = await fs.readFile(caminhoDoArquivo, 'utf-8');
-
-        // Verifica se o conteúdo é diferente antes de atualizar
-        if (conteudoAtual !== novoConteudo) {
-            // Limpa o arquivo antes de escrever o novo conteúdo
-            await fs.writeFile(caminhoDoArquivo, novoConteudo);
-
-            res.send('Configuração atualizada com sucesso!');
-            // Adicione lógica adicional, se necessário, como logs ou notificações
-        } else {
-            res.send('Configuração já está atualizada. Nenhuma alteração feita.');
-        }
-    } catch (error) {
-        console.error('Erro ao processar a solicitação:', error);
-        res.status(500).send({ erro: 'Erro ao processar a solicitação' });
-    }
-});
-
-app.use(express.static('public'));
-
 app.listen(port, () => {
     console.log(`Servidor rodando em http://localhost:${port}`);
 });
+

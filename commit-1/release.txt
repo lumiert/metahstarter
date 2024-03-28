@@ -1,0 +1,1 @@
+Em processo de desenvolvimento, o relay liga e desliga como forma de teste, e a pagina web exibe o horário corretamente, mas as rotinas não estão formatadas e nem exibindo na pagina. Sem bugs.

@@ -1,4 +1,3 @@
-
 const express = require('express');
 const fs = require('fs').promises;
 const app = express();
@@ -17,7 +16,7 @@ pino21.writeSync(1);
 let acionarPinos = true;
 let cooldownAtivo = false;
 
-function AcionaOn(tempo) {
+function AcionaOn() {
     try {
         const estado20 = pino20.readSync();
         const estado21 = pino21.readSync();
@@ -38,15 +37,15 @@ function AcionaOn(tempo) {
             
             // Desativa o cooldown após 5 segundos
             setTimeout(() => {
-                AcionaOff(tempo); // Chama AcionaOff após 5 segundos
-            }, tempo);
+                AcionaOff(); // Chama AcionaOff após 5 segundos
+            }, 5000);
         }
     } catch (error) {
         console.error('Erro ao alterar os pinos:', error.message);
     }
 }
 
-function AcionaOff(tempo) {
+function AcionaOff() {
     try {
         const estado20 = pino20.readSync();
         const estado21 = pino21.readSync();
@@ -61,12 +60,12 @@ function AcionaOff(tempo) {
         // Ativa a flag acionarPinos após 55 segundos
         setTimeout(() => {
             acionarPinos = true;
-        }, (60000 - tempo));
+        }, 55000);
 
         // Desativa o cooldown após 55 segundos
         setTimeout(() => {
             cooldownAtivo = false;
-        }, (60000 - tempo));
+        }, 55000);
     } catch (error) {
         console.error('Erro ao alterar os pinos:', error.message);
     }
@@ -581,7 +580,7 @@ app.get('/', (req, res) => {
         </style>
         
         <body>
-            <div class="header"><h1><img style="width: 42px;" src="/logo-nova.png"> Methastarter</h1><h5 style="display: block;">Horário Atual: <span id="horarioAtual">Carregando...</span></h5></div>
+            <div class="header"><h1>methastarter</h1><h5 style="display: block;">Horário Atual: <span id="horarioAtual">Carregando...</span></h5></div>
             <div class="tabs">
                 <a id="arotinas" onclick="tab(rotinas);" class="default-tab center-button">Rotinas</a>
                 <a id="alogs" onclick="tab(logs);" class="default-tab center-button">Logs</a>
@@ -598,7 +597,6 @@ app.get('/', (req, res) => {
                             <th>ID</th>
                             <th>Nome</th>
                             <th>Horário</th>
-			    <th>Tempo</th>
                             <th>Semana</th>
                         </tr>
 
@@ -624,8 +622,6 @@ app.get('/', (req, res) => {
                             </div>
                             
                             <p>Nome: </p> <input type="text" id="desc">
-
-                            <p>Tempo: </p> <input type="text" id="tempo">
 
                             <p>Semana: </p> 
                             
@@ -675,10 +671,7 @@ app.get('/', (req, res) => {
                 <h2>Como cadastrar uma rotina:</h2>
                 
                 <p>Comece criando uma nova rotina, defina o horário e os dias da semana que deseja acionar:</p> 
-                <img style="width: 80vh;" src="/demo.jpg"><br>
-                
-                <a class="default-button-green" href="/manual.pdf">Baixar Manual do Usuário</a>
-                
+                <img src="/demo.jpg">
                 <h2>Suporte Local</h2>
                 
                 <h3>E-mail: suporte@metadadosequipamentos.com.br</h3>
@@ -720,7 +713,7 @@ echo "nameserver $DNS" | sudo tee /etc/resolv.conf
                     
 sudo systemctl restart networking
 
-cd /home/acionador
+cd /home/acionador/
 
 sudo node /home/acionador/server.js\`;
 
@@ -838,7 +831,6 @@ sudo node /home/acionador/server.js\`;
                 function novaRotina() {
                     var id = document.getElementById('id');
                     var desc = document.getElementById('desc');
-                    var tempo = document.getElementById('tempo');
                     var hora1 = document.getElementById('hora1');
                     var hora2 = document.getElementById('hora2');
                     var semana = document.getElementById('semana');
@@ -849,7 +841,6 @@ sudo node /home/acionador/server.js\`;
                     document.getElementById('desc').value = "Nova Rotina";
                     document.getElementById('hora1').value = "00";
                     document.getElementById('hora2').value = "00";
-                    document.getElementById('tempo').value = "5";
                     document.getElementById('DOM').checked = false;                    
                     document.getElementById('SEG').checked = false;                    
                     document.getElementById('TER').checked = false;                    
@@ -963,11 +954,9 @@ sudo node /home/acionador/server.js\`;
                 
                 //APAGAR E EDITAR
                 
-                function editarRotina(id, nome, tempo, hora, semana) {
+                function editarRotina(id, nome, hora, semana) {
                     var idcaixa = document.getElementById('id');
                     var nomecaixa = document.getElementById('desc');
-                    var tempocaixa = document.getElementById('tempo');
-                    console.log(tempocaixa.value);
                     var hora1caixa = document.getElementById('hora1');
                     var hora2caixa = document.getElementById('hora2');
 
@@ -983,7 +972,6 @@ sudo node /home/acionador/server.js\`;
 
                     idcaixa.value = id;
                     nomecaixa.value = nome;
-		    tempocaixa.value = tempo;
 
                     // Separar a hora e os minutos
                     var [horaSeparada, minutosSeparados] = hora.split(":");
@@ -1034,16 +1022,15 @@ sudo node /home/acionador/server.js\`;
                     
                     var id = document.getElementById('id').value;
                     var desc = document.getElementById('desc').value;
-                    var tempo = document.getElementById('tempo').value;
                     var hora = document.getElementById('hora1').value + ":" + document.getElementById('hora2').value;
                     var semana = semanaStr;
 
                     if (id === "") {
                         id = 0;
-                        //console.log('ó o id: ' + id);
+                        console.log('ó o id: ' + id);
                     }
 
-                    var caixa = id + ";" + desc + ";" + tempo + ";" + hora + ";" + semana + ".";
+                    var caixa = id + ";" + desc + ";" + hora + ";" + semana + ".";
                     
                     
                     if (
@@ -1136,14 +1123,14 @@ async function apagarLog() {
         const linhas = data.split('\n').filter(linha => linha.trim() !== '');
 
         // Verifica se o número de linhas é maior que 200
-        if (linhas.length > 1000) {
+        if (linhas.length > 200) {
             // Cria um novo conteúdo vazio
             const novoConteudo = '';
 
             // Escreve o conteúdo vazio no arquivo 'log.txt'
             await fs.writeFile(filePath, novoConteudo, 'utf-8');
 
-            console.log('Conteúdo do arquivo log.txt limpo devido ao limite de 1000 linhas.');
+            console.log('Conteúdo do arquivo log.txt limpo devido ao limite de 200 linhas.');
         }
     } catch (error) {
         console.error('Erro ao limpar o arquivo log.txt:', error);
@@ -1165,15 +1152,11 @@ async function verificarHorariosRotinas() {
 
         // Verifica se o horário atual está presente nas rotinas
         for (const linha of linhas) {
-            const horaMinutoRotina = linha.split(';')[3];
+            const horaMinutoRotina = linha.split(';')[2];
             
             //separa dias semana
-            const diaSemanaRotina = linha.split(';')[4];
+            const diaSemanaRotina = linha.split(';')[3];
             const arrayDias = diaSemanaRotina.split('').map(Number);
-            
-            //tempo acionamento
-            const tempo = (linha.split(';')[2] * 1000);
-            console.log(tempo);
             
             for (var i = 0; i < arrayDias.length; i++){
                 //console.log(diaSemanaAtual +' = '+ arrayDias[i]);
@@ -1183,12 +1166,12 @@ async function verificarHorariosRotinas() {
             if (horaMinutoAtual === horaMinutoRotina) {
                 //console.log('passou hora');
                 for (var i = 0; i < arrayDias.length; i++){
-                    //console.log(diaSemanaAtual +' = '+ arrayDias[i]);
+                    console.log(diaSemanaAtual +' = '+ arrayDias[i]);
                     if (diaSemanaAtual  === arrayDias[i]){
                         //console.log('passou dias');
                         
                         // Aciona a sirene se encontrar um horário correspondente
-                        AcionaOn(tempo);
+                        AcionaOn();
                         break;  // Para a verificação após encontrar uma correspondência
                     }
                 }
@@ -1237,8 +1220,8 @@ app.get('/rotinas', async (req, res) => {
         const linhas = data.split('\n').filter(linha => linha.trim() !== '');
 
         // Gera uma tabela HTML a partir das linhas com títulos nas colunas
-        const tabelaHTML = `<thead><tr><th>ID</th><th>Nome</th><th>Tempo</th><th>Horário</th><th>Semana</th><th>Ações</th></tr></thead><tbody>${linhas.map((linha, index) => {
-            const [id, nome, tempo, hora, semana] = linha.split(';');
+        const tabelaHTML = `<thead><tr><th>ID</th><th>Nome</th><th>Horário</th><th>Semana</th><th>Ações</th></tr></thead><tbody>${linhas.map((linha, index) => {
+            const [id, nome, hora, semana] = linha.split(';');
             
             var diasDaSemana = ['DOM', 'SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SAB'];
             
@@ -1254,7 +1237,7 @@ app.get('/rotinas', async (req, res) => {
             }
             
             
-            return `<tr><td>${id}</td><td>${nome}</td><td>${tempo}</td><td>${hora}</td><td>${semanaNova}</td><td><a class="default-button-red" onclick="apagarRotina(${id});">Apagar</a><a class="default-button-orange" <a onclick="atualizarRotinas(); editarRotina(${id}, '${nome}', '${tempo}', '${hora}', '${semana}');">Editar</a></td></tr>`;
+            return `<tr><td>${id}</td><td>${nome}</td><td>${hora}</td><td>${semanaNova}</td><td><a class="default-button-red" onclick="apagarRotina(${id});">Apagar</a><a class="default-button-orange" <a onclick="atualizarRotinas(); editarRotina(${id}, '${nome}', '${hora}', '${semana}');">Editar</a></td></tr>`;
         }).join('')}</tbody>`;
         
         const vazio = `<h1>Não há rotinas para exibir, cadastre uma nova!</h1>`

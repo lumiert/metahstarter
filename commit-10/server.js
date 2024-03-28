@@ -581,7 +581,7 @@ app.get('/', (req, res) => {
         </style>
         
         <body>
-            <div class="header"><h1><img style="width: 42px;" src="/logo-nova.png"> Methastarter</h1><h5 style="display: block;">Horário Atual: <span id="horarioAtual">Carregando...</span></h5></div>
+            <div class="header"><h1>Methastarter</h1><h5 style="display: block;">Horário Atual: <span id="horarioAtual">Carregando...</span></h5></div>
             <div class="tabs">
                 <a id="arotinas" onclick="tab(rotinas);" class="default-tab center-button">Rotinas</a>
                 <a id="alogs" onclick="tab(logs);" class="default-tab center-button">Logs</a>
@@ -675,10 +675,7 @@ app.get('/', (req, res) => {
                 <h2>Como cadastrar uma rotina:</h2>
                 
                 <p>Comece criando uma nova rotina, defina o horário e os dias da semana que deseja acionar:</p> 
-                <img style="width: 80vh;" src="/demo.jpg"><br>
-                
-                <a class="default-button-green" href="/manual.pdf">Baixar Manual do Usuário</a>
-                
+                <img style="width: 80vw;" src="/demo.jpg">
                 <h2>Suporte Local</h2>
                 
                 <h3>E-mail: suporte@metadadosequipamentos.com.br</h3>

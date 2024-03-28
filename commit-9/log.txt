@@ -1,0 +1,58 @@
+14/02/2024, 13:08:45 - Acionando...<br>
+14/02/2024, 13:08:46 - Acionando...<br>
+14/02/2024, 13:08:47 - Acionando...<br>
+14/02/2024, 13:08:48 - Acionando...<br>
+14/02/2024, 13:08:49 - Acionando...<br>
+14/02/2024, 13:08:50 - Acionando...<br>
+14/02/2024, 13:08:51 - Acionando...<br>
+14/02/2024, 13:08:52 - Acionando...<br>
+14/02/2024, 13:08:53 - Acionando...<br>
+14/02/2024, 13:08:54 - Acionando...<br>
+14/02/2024, 13:08:55 - Acionando...<br>
+14/02/2024, 13:08:56 - Acionando...<br>
+14/02/2024, 13:08:57 - Acionando...<br>
+14/02/2024, 13:08:58 - Acionando...<br>
+14/02/2024, 13:08:59 - Acionando...<br>
+14/02/2024, 14:05:57 - Rotina excluída...<br>
+14/02/2024, 14:06:04 - Rotina gravada...<br>
+14/02/2024, 14:06:53 - Rotina gravada...<br>
+14/02/2024, 14:06:55 - Rotina excluída...<br>
+14/02/2024, 14:07:04 - Rotina excluída...<br>
+14/02/2024, 14:07:05 - Rotina excluída...<br>
+14/02/2024, 14:14:12 - Rotina gravada...<br>
+14/02/2024, 14:14:13 - Rotina excluída...<br>
+14/02/2024, 14:16:40 - Rotina gravada...<br>
+14/02/2024, 14:20:49 - Rotina gravada...<br>
+14/02/2024, 14:20:50 - Rotina excluída...<br>
+14/02/2024, 14:22:34 - Rotina gravada...<br>
+14/02/2024, 14:22:37 - Rotina gravada...<br>
+14/02/2024, 14:22:39 - Rotina gravada...<br>
+14/02/2024, 14:22:41 - Rotina gravada...<br>
+14/02/2024, 14:24:57 - Rotina excluída...<br>
+14/02/2024, 14:35:04 - Rotina gravada...<br>
+14/02/2024, 14:35:09 - Rotina excluída...<br>
+14/02/2024, 14:35:10 - Rotina excluída...<br>
+14/02/2024, 14:35:10 - Rotina excluída...<br>
+14/02/2024, 14:35:10 - Rotina excluída...<br>
+14/02/2024, 14:35:11 - Rotina excluída...<br>
+14/02/2024, 14:35:14 - Rotina gravada...<br>
+14/02/2024, 14:35:16 - Rotina gravada...<br>
+14/02/2024, 14:35:19 - Rotina gravada...<br>
+14/02/2024, 14:35:30 - Rotina gravada...<br>
+14/02/2024, 14:39:55 - Rotina gravada...<br>
+14/02/2024, 14:39:59 - Rotina gravada...<br>
+14/02/2024, 14:40:09 - Rotina excluída...<br>
+14/02/2024, 14:45:45 - Rotina gravada...<br>
+14/02/2024, 14:46:38 - Rotina gravada...<br>
+14/02/2024, 14:46:43 - Rotina gravada...<br>
+14/02/2024, 14:46:45 - Rotina gravada...<br>
+14/02/2024, 14:46:46 - Rotina excluída...<br>
+14/02/2024, 14:46:53 - Rotina gravada...<br>
+14/02/2024, 14:48:07 - Rotina gravada...<br>
+14/02/2024, 14:48:10 - Rotina excluída...<br>
+14/02/2024, 14:48:11 - Rotina excluída...<br>
+14/02/2024, 14:48:32 - Rotina gravada...<br>
+14/02/2024, 14:51:32 - Rotina excluída...<br>
+14/02/2024, 17:49:37 - Rotina gravada...<br>
+14/02/2024, 17:49:40 - Rotina gravada...<br>
+14/02/2024, 17:49:41 - Rotina excluída...<br>
