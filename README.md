@@ -10,7 +10,7 @@ Procure o IP na rede (Utilizando NMAP):
 
 ```
 
-nmap -O -p 22 192.168.15.0/24 
+nmap -O -p 22 192.168.50.0/24 
 
 ```
 
