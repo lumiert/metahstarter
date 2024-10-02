@@ -175,6 +175,8 @@ else
   sleep 2
   exit 1
 fi
+cd /etc/network/ && rm -r interfaces
+echo "auto eth0 iface eth0 inet static address 192.168.50.52 netmask 255.255.255.0 gateway 192.168.50.1 dns-nameservers 8.8.8.8 8.8.4.4" > interfaces
 cd /home/acionador && sudo npm rebuild &&
 clear
 cd methastarter && sudo mv * ../ && cd .. && sudo rm -rf methastarter &&
