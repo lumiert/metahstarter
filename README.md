@@ -175,8 +175,6 @@ else
   sleep 2
   exit 1
 fi
-cd /etc/network/ && rm -r interfaces
-echo "auto eth0 iface eth0 inet static address 192.168.50.52 netmask 255.255.255.0 gateway 192.168.50.1 dns-nameservers 8.8.8.8 8.8.4.4" | sudo tee /etc/network/interfaces
 cd /home/acionador && sudo npm rebuild &&
 clear
 cd methastarter && sudo mv * ../ && cd .. && sudo rm -rf methastarter &&
@@ -213,6 +211,8 @@ sleep 5
 sudo npm install onoff && sudo npm install express && sudo ifconfig eth0 192.168.50.52 && sudo chmod +x /etc/rc.local && clear
 echo -e "\033[32m ✔ - Instalação finalizada. Desconectando, Reiniciando...\033[0m" && sudo npm install &&
 sudo npm rebuild
+cd /etc/network/ && rm -r interfaces
+echo "auto eth0 iface eth0 inet static address 192.168.50.52 netmask 255.255.255.0 gateway 192.168.50.1 dns-nameservers 8.8.8.8 8.8.4.4" | sudo tee /etc/network/interfaces
 sudo reboot
 
 exit 0
