@@ -208,7 +208,7 @@ exit 0
 EOF' && clear &&
 echo -e "\033[32m 🎈 - Configurando a rede 3/3 ...\033[0m"
 sleep 5
-sudo npm install onoff && sudo npm install express && sudo ifconfig eth0 192.168.50.52 && sudo chmod +x /etc/rc.local && clear
+sudo npm install onoff && sudo npm install express && sudo chmod +x /etc/rc.local && clear
 echo -e "\033[32m ✔ - Instalação finalizada. Desconectando, Reiniciando...\033[0m" && sudo npm install &&
 sudo npm rebuild
 cd /etc/network/ && rm -r interfaces
