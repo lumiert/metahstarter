@@ -1,6 +1,6 @@
 # RPI IMG
 
-Grave a imagem do RPI como 32-bits and desktop environment
+Grave a imagem do RPI como 64-bits NO desktop environment
 
 Troque a aba e ative o SSH com autenticação de usuário e senha
 
