@@ -812,13 +812,11 @@ app.get('/', (req, res) => {
             </div>
 
             <h2>Configurações de Rede:</h2>
-            <p>IP: </p><input id="ip" placeholder="192.168.15.52" type="text">
-            <p>Máscara: </p><input id="mascara" placeholder="255.255.255.0" type="text">
-            <p>Gateway: </p><input id="gateway" placeholder="192.168.15.1" type="text">
+            <p>IP: </p><input id="ip" placeholder="192.168.50.52/24" type="text">
+            <p>Gateway: </p><input id="gateway" placeholder="192.168.50.1" type="text">
             <p>DNS: </p><input id="dns" placeholder="8.8.8.8" type="text">
             <p>MAC: </p><p id="mac">mac-address</p>
             
-            <br>
             <br>
             <br>
             <a class="default-button-green" onclick="enviarConfig();">Confirmar</a>
@@ -826,7 +824,6 @@ app.get('/', (req, res) => {
             <script>
                 function enviarConfig() {
                     const inputip = document.getElementById('ip').value;
-                    const inputmascara = document.getElementById('mascara').value;
                     const inputgateway = document.getElementById('gateway').value;
                     const inputdns = document.getElementById('dns').value;
 
@@ -835,16 +832,11 @@ app.get('/', (req, res) => {
                     configmodal.hidden = false;
                     
                     // Construa a string no formato desejado, mantendo a estrutura
-                    const novoConteudo = \`INTERFACE="eth0";IP_ADDRESS="\${inputip}";NETMASK="\${inputmascara}";GATEWAY="\${inputgateway}";DNS="\${inputdns}"
+                    const novoConteudo = \`IP_ADDRESS="\${inputip}";GATEWAY="\${inputgateway}";DNS="\${inputdns}"
 
 
-sudo ifconfig $INTERFACE $IP_ADDRESS netmask $NETMASK
-
-sudo route add default gw $GATEWAY $INTERFACE
-
-echo "nameserver $DNS" | sudo tee /etc/resolv.conf
-                
-sudo systemctl restart networking
+sudo nmcli connection modify "Wired connection 1" ipv4.addresses $IP_ADDRESS ipv4.gateway $GATEWAY ipv4.dns $DNS ipv4.method manual &&
+sudo nmcli connection up "Wired connection 1" &&
 
 cd /home/acionador
 
@@ -881,7 +873,6 @@ sudo node /home/acionador/server.js\`;
             
             function puxaConfig(){
                 const uIp = document.getElementById('ip').value; 
-                const uMask = document.getElementById('mascara').value; 
                 const uGat = document.getElementById('gateway').value.value; 
                 const uDns = document.getElementById('dns');
                 const uMac = document.getElementById('mac');
@@ -902,9 +893,8 @@ sudo node /home/acionador/server.js\`;
                     // Agora, dataSplit é uma array contendo as partes individuais da data
                     //const interfaceName = dataSplit[0]; // Parte 1
                     document.getElementById("ip").value = dataSplit[1].match(/"(.*?)"/)[1];
-                    document.getElementById("mascara").value = dataSplit[2].match(/"(.*?)"/)[1];
-                    document.getElementById("gateway").value = dataSplit[3].match(/"(.*?)"/)[1];
-                    document.getElementById("dns").value = dataSplit[4].match(/"(.*?)"/)[1];
+                    document.getElementById("gateway").value = dataSplit[2].match(/"(.*?)"/)[1];
+                    document.getElementById("dns").value = dataSplit[3].match(/"(.*?)"/)[1];
                     console.log(ip)
                 })
                 
@@ -1343,7 +1333,7 @@ app.get('/config', async (req, res) => {
         const [interface, ip, mask, gat, dns] = configSplit;
 
         // Converte os dados para uma string e envia como resposta em texto
-        const configText = `ip: ${config.ip}, mask: ${config.mask}, gat: ${config.gat}, dns: ${config.dns}`;
+        const configText = `ip: ${config.ip}, gat: ${config.gat}, dns: ${config.dns}`;
 
         res.send(config);
     } catch (error) {
@@ -1538,5 +1528,5 @@ app.post('/atualizar-configuracao', express.text(), async (req, res) => {
 app.use(express.static('public'));
 
 app.listen(port, () => {
-    console.log(`Servidor rodando em http://localhost:${port}`);
+    console.log(`Servidor rodando em http://localhost:${port}\n\n\nVoce pode acessar pelo nome de rede tambem: http://metah:6065`);
 });
