@@ -660,8 +660,8 @@
             </div>
 
             <h2>Configurações de Rede:</h2>
-            <p>IP: </p><input id="ip" placeholder="192.168.50.52/24" type="text">
-            <p>Gateway: </p><input id="gateway" placeholder="192.168.50.1" type="text">
+            <p>IP: </p><input id="ip" placeholder="192.168.0.52/24" type="text">
+            <p>Gateway: </p><input id="gateway" placeholder="192.168.0.1" type="text">
             <p>DNS: </p><input id="dns" placeholder="8.8.8.8" type="text">
             <p>MAC: </p><p id="mac">mac-address</p>
             
@@ -680,15 +680,7 @@
                     configmodal.hidden = false;
                     
                     // Construa a string no formato desejado, mantendo a estrutura
-                    const novoConteudo = \`IP_ADDRESS="\${inputip}";GATEWAY="\${inputgateway}";DNS="\${inputdns}"
-
-
-sudo nmcli connection modify "Wired connection 1" ipv4.addresses $IP_ADDRESS ipv4.gateway $GATEWAY ipv4.dns $DNS ipv4.method manual &&
-sudo nmcli connection up "Wired connection 1" &&
-
-cd /home/acionador
-
-sudo node /home/acionador/server.js\`;
+                    const novoConteudo = `{"ip_address": "${inputip}","gateway": "${inputgateway}","dns": "${inputdns}"}`;
 
                     // Envia a string para o servidor
                     fetch('/atualizar-configuracao', {
