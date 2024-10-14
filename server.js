@@ -168,8 +168,8 @@ async function apagarLog() {
 
 async function verificarHorariosRotinas() {
     try {
-        // Lê o conteúdo do arquivo rotinas.txt
-        const data = await fs.readFile('rotinas.txt', 'utf-8');
+        // Lê o conteúdo do arquivo rotinas.rotn
+        const data = await fs.readFile('rotinas.rotn', 'utf-8');
 
         // Divida as linhas do arquivo em um array
         const linhas = data.split('.').filter(linha => linha.trim() !== '');
@@ -242,7 +242,7 @@ app.get('/config', async (req, res) => {
 
 app.get('/rotinas', async (req, res) => {
     try {
-        // Lê o conteúdo do arquivo rotinas.txt
+        // Lê o conteúdo do arquivo rotinas.rotn
         const data = await fs.readFile('rotinas.rotn', 'utf-8');
 
         // Divida as linhas do arquivo em um array
@@ -293,7 +293,7 @@ app.post('/apagarRotina/:id', async (req, res) => {
         // Lógica para remover a rotina com o ID fornecido do arquivo rotinas.txt
 
         // Exemplo de como remover uma linha com o ID fornecido
-        // Você pode ajustar isso de acordo com a estrutura real do seu arquivo rotinas.txt
+        // Você pode ajustar isso de acordo com a estrutura real do seu arquivo rotinas.rotn
         const data = await fs.readFile('rotinas.rotn', 'utf-8');
         const linhas = data.split('\n');
         const novaLista = linhas.filter(linha => {
@@ -367,7 +367,7 @@ app.post('/gravar', express.text(), async (req, res) => {
 app.get('/log', async (req, res) => {
     apagarLog();
     try {
-        // Lê o conteúdo do arquivo rotinas.txt
+        // Lê o conteúdo do arquivo rotinas.rotn
         const data = await fs.readFile('log.txt', 'utf-8');
 
         // Divida as linhas do arquivo em um array
