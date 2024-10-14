@@ -335,25 +335,19 @@ app.get('/rotinas', async (req, res) => {
 app.post('/apagarRotina/:id', async (req, res) => {
     try {
         const idToRemove = req.params.id;
-        console.log('ID a remover:', idToRemove); // Debugging
+        // Lógica para remover a rotina com o ID fornecido do arquivo rotinas.txt
 
-        const data = await fs.readFile('rotinas.txt', 'utf-8').catch(err => {
-            console.error('Erro ao ler o arquivo:', err);
-            return res.status(500).send('Erro ao ler o arquivo.');
-        });
-
+        // Exemplo de como remover uma linha com o ID fornecido
+        // Você pode ajustar isso de acordo com a estrutura real do seu arquivo rotinas.txt
+        const data = await fs.readFile('rotinas.txt', 'utf-8');
         const linhas = data.split('\n');
         const novaLista = linhas.filter(linha => {
             const [id] = linha.split(';');
             return id !== idToRemove;
         });
-
-        await fs.writeFile('rotinas.txt', novaLista.join('\n'), 'utf-8').catch(err => {
-            console.error('Erro ao escrever o arquivo:', err);
-            return res.status(500).send('Erro ao escrever o arquivo.');
-        });
-
-        res.json({ message: 'Rotina removida com sucesso.' });
+        await fs.writeFile('rotinas.txt', novaLista.join('\n'), 'utf-8');
+        
+        res.send('Rotina removida com sucesso.');
         gravaLog(obterHorarioAtual() + ' - Rotina excluída...<br>');
     } catch (error) {
         console.error('Erro ao remover a rotina:', error);
