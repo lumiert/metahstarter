@@ -227,11 +227,8 @@ app.get('/config', async (req, res) => {
         // Converte o JSON lido para um objeto JavaScript
         const config = JSON.parse(data);
 
-        // Monta uma string com os dados necessários usando as chaves corretas
-        const configText = `ip: ${config.ip_address}, gat: ${config.gateway}, dns: ${config.dns}`;
-
-        // Envia a string como resposta
-        res.send(configText);
+        // Retorna o objeto como JSON
+        res.json(config);
     } catch (error) {
         console.error('Erro ao ler o arquivo rede.json:', error);
         res.status(500).send('Erro interno do servidor');
