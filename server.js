@@ -222,7 +222,7 @@ setInterval(verificarHorariosRotinas, 1000);
 app.get('/config', async (req, res) => {
     try {
         // Lê o conteúdo do arquivo config.json
-        const data = await fs.readFile('config.json', 'utf-8');
+        const data = await fs.readFile('rede.json', 'utf-8');
         
         // Converte o JSON lido para um objeto JavaScript
         const config = JSON.parse(data);
@@ -233,7 +233,7 @@ app.get('/config', async (req, res) => {
         // Envia a string como resposta
         res.send(configText);
     } catch (error) {
-        console.error('Erro ao ler o arquivo config.json:', error);
+        console.error('Erro ao ler o arquivo rede.json:', error);
         res.status(500).send('Erro interno do servidor');
     }
 });
