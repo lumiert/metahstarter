@@ -403,7 +403,7 @@ function gravaLog(log){
 
 app.post('/atualizar-configuracao', express.text(), async (req, res) => {
     const novoConteudo = req.body;
-    const caminhoDoArquivo = 'start.sh';
+    const caminhoDoArquivo = 'rede.conf';
 
     try {
         // Lê o conteúdo atual do arquivo
