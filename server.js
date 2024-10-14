@@ -216,8 +216,8 @@ async function apagarLog() {
 
 async function verificarHorariosRotinas() {
     try {
-        // Lê o conteúdo do arquivo rotinas.rotn
-        const data = await fs.readFile('rotinas.rotn', 'utf-8');
+        // Lê o conteúdo do arquivo rotinas.txt
+        const data = await fs.readFile('rotinas.txt', 'utf-8');
 
         // Divida as linhas do arquivo em um array
         const linhas = data.split('.').filter(linha => linha.trim() !== '');
@@ -288,7 +288,7 @@ app.get('/config', async (req, res) => {
 app.get('/rotinas', async (req, res) => {
     try {
         // Lê o conteúdo do arquivo rotinas.rotn
-        const data = await fs.readFile('rotinas.rotn', 'utf-8');
+        const data = await fs.readFile('rotinas.txt', 'utf-8');
 
         // Divida as linhas do arquivo em um array
         const linhas = data.split('\n').filter(linha => linha.trim() !== '');
@@ -325,7 +325,7 @@ app.get('/rotinas', async (req, res) => {
         }
         
     } catch (error) {
-        console.error('Erro ao ler o arquivo rotinas.rotn:', error);
+        console.error('Erro ao ler o arquivo rotinas.txt:', error);
         res.status(500).send('Erro interno do servidor');
     }
 });
@@ -339,13 +339,13 @@ app.post('/apagarRotina/:id', async (req, res) => {
 
         // Exemplo de como remover uma linha com o ID fornecido
         // Você pode ajustar isso de acordo com a estrutura real do seu arquivo rotinas.rotn
-        const data = await fs.readFile('rotinas.rotn', 'utf-8');
+        const data = await fs.readFile('rotinas.txt', 'utf-8');
         const linhas = data.split('\n');
         const novaLista = linhas.filter(linha => {
             const [id] = linha.split(';');
             return id !== idToRemove;
         });
-        await fs.writeFile('rotinas.rotn', novaLista.join('\n'), 'utf-8');
+        await fs.writeFile('rotinas.txt', novaLista.join('\n'), 'utf-8');
         
         res.send('Rotina removida com sucesso.');
         gravaLog(obterHorarioAtual() + ' - Rotina excluída...<br>');
@@ -360,7 +360,7 @@ app.post('/apagarRotina/:id', async (req, res) => {
 app.post('/gravar', express.text(), async (req, res) => {
     const novaRotina = req.body;
     try {
-        const data = await fs.readFile('rotinas.rotn', 'utf-8');
+        const data = await fs.readFile('rotinas.txt', 'utf-8');
         let linhas = data.split('\n').filter(linha => linha.trim() !== '');
 
         // Encontrar o último ID existente
@@ -394,15 +394,15 @@ app.post('/gravar', express.text(), async (req, res) => {
         }
 
         // Limpa o arquivo antes de escrever o novo conteúdo
-        await fs.writeFile('rotinas.rotn', '');
+        await fs.writeFile('rotinas.txt', '');
 
         // Reescreve o arquivo com as modificações
-        await fs.appendFile('rotinas.rotn', linhas.join('\n'));
+        await fs.appendFile('rotinas.txt', linhas.join('\n'));
 
         res.send('Rotina gravada com sucesso!');
         gravaLog(obterHorarioAtual() + ' - Rotina gravada...<br>');
     } catch (error) {
-        console.error('Erro ao gravar no arquivo rotinas.rotn:', error);
+        console.error('Erro ao gravar no arquivo rotinas.txt:', error);
         res.status(500).send({ erro: 'Erro ao gravar no arquivo' });
     }
 });
@@ -412,7 +412,7 @@ app.post('/gravar', express.text(), async (req, res) => {
 app.get('/log', async (req, res) => {
     apagarLog();
     try {
-        // Lê o conteúdo do arquivo rotinas.rotn
+        // Lê o conteúdo do arquivo rotinas.txt
         const data = await fs.readFile('log.txt', 'utf-8');
 
         // Divida as linhas do arquivo em um array
