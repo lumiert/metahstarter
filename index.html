@@ -712,23 +712,17 @@
             //PUXA CONFIG
             
             function puxaConfig() {
-                const uIp = document.getElementById('ip').value; 
-                const uGat = document.getElementById('gateway').value; 
-                const uDns = document.getElementById('dns').value; 
-                const uMac = document.getElementById('mac');
-
                 fetch("/config")
-                   .then(response => {
+                    .then(response => {
                         if (!response.ok) {
                             throw new Error('Erro ao obter a configuração da rede');
                         }
-                        return response.json(); // Altera para JSON
+                        return response.json(); // Mude para JSON
                     })
                     .then(data => {
-                        // Os dados retornados estão disponíveis aqui
                         console.log(data); // Exibe os dados no console do navegador
-                        
-                        // Acessa diretamente as propriedades do objeto JSON
+            
+                        // Acesse as propriedades diretamente do objeto JSON
                         document.getElementById("ip").value = data.ip_address;
                         document.getElementById("gateway").value = data.gateway;
                         document.getElementById("dns").value = data.dns;
@@ -736,7 +730,7 @@
                     .catch(error => {
                         console.error('Erro:', error);
                     });
-
+            
                 // Requisição para o endpoint /mac
                 fetch("/mac")
                     .then(response => {
@@ -747,8 +741,7 @@
                     })
                     .then(data => {
                         // Atualiza o elemento com a configuração de MAC
-                        uMac.innerText = data; // Usa a variável uMac
-                        console.log(uMac);
+                        document.getElementById("mac").innerText = data;
                     })
                     .catch(error => {
                         console.error('Erro ao obter o MAC:', error);
