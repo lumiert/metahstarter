@@ -687,7 +687,7 @@ app.get('/', (req, res) => {
     </style>
     
     <body>
-        <div class="header"><h1><img style="width: 42px;" src="/logo-nova.png"> Methastarter</h1><h5 style="display: block;">Horário Atual: <span id="horarioAtual">Carregando...</span></h5></div>
+        <div class="header"><h1><img style="width: 42px;" src="/logo-nova.png"> Metahstarter</h1><h5 style="display: block;">Horário Atual: <span id="horarioAtual">Carregando...</span></h5></div>
         <div class="tabs">
             <a id="arotinas" onclick="tab(rotinas);" class="default-tab center-button">Rotinas</a>
             <a id="alogs" onclick="tab(logs);" class="default-tab center-button">Logs</a>
@@ -1099,7 +1099,7 @@ sudo node /home/acionador/server.js\`;
 
                 idcaixa.value = id;
                 nomecaixa.value = nome;
-        tempocaixa.value = tempo;
+                tempocaixa.value = tempo;
 
                 // Separar a hora e os minutos
                 var [horaSeparada, minutosSeparados] = hora.split(":");
