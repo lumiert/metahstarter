@@ -221,14 +221,14 @@ setInterval(verificarHorariosRotinas, 1000);
 
 app.get('/config', async (req, res) => {
     try {
-        // Lê o conteúdo do arquivo config.json
+        // Lê o conteúdo do arquivo rede.json
         const data = await fs.readFile('rede.json', 'utf-8');
         
         // Converte o JSON lido para um objeto JavaScript
         const config = JSON.parse(data);
 
-        // Monta uma string com os dados necessários
-        const configText = `ip: ${config.ip}, gat: ${config.gat}, dns: ${config.dns}`;
+        // Monta uma string com os dados necessários usando as chaves corretas
+        const configText = `ip: ${config.ip_address}, gat: ${config.gateway}, dns: ${config.dns}`;
 
         // Envia a string como resposta
         res.send(configText);
