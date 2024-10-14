@@ -18,19 +18,18 @@ ssh -l metah@192.168.50.52
 
 ```
 
-# Linux - Baixar Software:
+# Linux - Atualizar, baixar e instalar software:
 
 ```
 
-sudo apt update && sudo apt upgrade && sudo git clone https://github.com/lumiert/metahstarter
+sudo apt update && sudo apt upgrade && sudo apt install git nodejs npm -y && sudo git clone https://github.com/lumiert/metahstarter && cd metahstarter && sudo npm i && sudo chmod +x ~/metahstarter/install.sh && sudo ./install.sh
 
 ```
 
-# Linux - Instalar Software:
+# Abrir no navegador:
 
 ```
 
-chmod +x ~/metahstarter/install.sh
-sudo ./install.sh
+http://metah:6065 
 
 ```
