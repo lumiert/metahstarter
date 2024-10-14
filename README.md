@@ -30,6 +30,7 @@ sudo apt update && sudo apt upgrade && sudo git clone https://github.com/lumiert
 
 ```
 
+chmod +x ~/metahstarter/install.sh
 sudo ./install.sh
 
 ```
