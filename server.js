@@ -311,7 +311,7 @@ app.get('/rotinas', async (req, res) => {
             }
             
             
-            return `<tr><td>${id}</td><td>${nome}</td><td>${tempo}</td><td>${hora}</td><td>${semanaNova}</td><td><a class="default-button-red" onclick="apagarRotina(${id});">Apagar</a><a class="default-button-orange" <a onclick="atualizarRotinas(); editarRotina(${id}, '${nome}', '${tempo}', '${hora}', '${semana}');">Editar</a></td></tr>`;
+            return `<tr><td>${id}</td><td>${nome}</td><td>${tempo}</td><td>${hora}</td><td>${semanaNova}</td><td><a class="default-button-red" onclick="apagarRotina(${id});">Apagar</a><a class="default-button-blue" <a onclick="atualizarRotinas(); editarRotina(${id}, '${nome}', '${tempo}', '${hora}', '${semana}');">Editar</a></td></tr>`;
         }).join('')}</tbody>`;
         
         const vazio = `<h1>Não há rotinas para exibir, cadastre uma nova!</h1>`
