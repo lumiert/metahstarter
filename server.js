@@ -6,6 +6,7 @@ const Gpio = require('onoff').Gpio;
 const pino20 = new Gpio(532, 'out');
 const pino21 = new Gpio(533, 'out');
 const port = 6065;
+const { exec } = require('child_process'); // Para executar comandos de shell
 const os = require('os');
 
 const interfaces = os.networkInterfaces();
@@ -16,6 +17,53 @@ pino21.writeSync(1);
 
 let acionarPinos = true;
 let cooldownAtivo = false;
+
+async function NodeNmcli() {
+    try {
+        // Lê o conteúdo do arquivo rede.json
+        const data = await fs.readFile('rede.json', 'utf-8');
+        
+        // Converte o JSON lido para um objeto JavaScript
+        const config = JSON.parse(data);
+
+        // Monta os comandos para atualizar a configuração
+        const modifyCommand = `sudo nmcli connection modify "Wired connection 1" \
+            ipv4.method manual \
+            ipv4.addresses ${config.ip_address} \
+            ipv4.gateway ${config.gateway} \
+            ipv4.dns "${config.dns}"`;
+
+        const upCommand = `sudo nmcli connection up "Wired connection 1"`;
+
+        // Executa o comando de modificação
+        exec(modifyCommand, (error, stdout, stderr) => {
+            if (error) {
+                console.error(`Erro ao modificar a conexão: ${error.message}`);
+                return;
+            }
+            if (stderr) {
+                console.error(`Erro: ${stderr}`);
+                return;
+            }
+            console.log(`Conexão modificada: ${stdout}`);
+
+            // Executa o comando para ativar a conexão
+            exec(upCommand, (error, stdout, stderr) => {
+                if (error) {
+                    console.error(`Erro ao ativar a conexão: ${error.message}`);
+                    return;
+                }
+                if (stderr) {
+                    console.error(`Erro: ${stderr}`);
+                    return;
+                }
+                console.log(`Conexão ativada: ${stdout}`);
+            });
+        });
+    } catch (error) {
+        console.error('Erro ao ler o arquivo rede.json:', error);
+    }
+}
 
 function AcionaOn(tempo) {
     try {
@@ -408,6 +456,7 @@ app.post('/atualizar-configuracao', express.text(), async (req, res) => {
             await fs.writeFile(caminhoDoArquivo, novoConteudo);
 
             res.send('Configuração atualizada com sucesso!');
+            NodeNmcli();
             // Adicione lógica adicional, se necessário, como logs ou notificações
         } else {
             res.send('Configuração já está atualizada. Nenhuma alteração feita.');
