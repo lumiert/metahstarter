@@ -467,7 +467,7 @@ app.post('/atualizar-configuracao', express.text(), async (req, res) => {
     }
 });
 
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.listen(port, () => {
     console.log(`Servidor rodando em http://localhost:${port}\n\n\nVoce pode acessar pelo dominio de rede tambem: http://metah:6065\n\n\n`);
