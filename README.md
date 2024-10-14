@@ -18,7 +18,15 @@ ssh -l metah@192.168.50.52
 
 ```
 
-# Linux - EXECUTE O BASH
+# Linux - Baixar Software:
+
+```
+
+sudo apt update && sudo apt upgrade && sudo git clone https://github.com/lumiert/metahstarter
+
+```
+
+# Linux - Instalar Software:
 
 ```
 
